@@ -1,6 +1,7 @@
 import 'package:app_chess/bloc/cubits/game_cubit.dart';
 import 'package:app_chess/config/colors.dart';
 import 'package:app_chess/models/cell.dart';
+import 'package:app_chess/screens/login/login_screen.dart';
 import 'package:app_chess/ui/figure_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,10 @@ class CellWidget extends StatelessWidget {
       : super(key: key);
 
   _onTap(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
     final gameCubit = GetIt.I<GameCubit>();
 
     // if AI calculating position => block any interactions
