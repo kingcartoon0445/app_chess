@@ -2,6 +2,10 @@ import 'package:app_chess/bloc/app_blocs.dart';
 import 'package:app_chess/screens/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+export 'package:flutter/material.dart';
+export 'package:app_chess/services/dio_api.dart';
+export 'package:dio/dio.dart';
+export 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   createAppBlocs();

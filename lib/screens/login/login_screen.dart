@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  Function(String userName, String passwold) onLogin;
+  LoginScreen({Key? key, required this.onLogin}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -168,11 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(30),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FinancialSummaryScreen()),
-                        );
+                        widget.onLogin(
+                            _usernameController.text, _passwordController.text);
                       },
                       child: Container(
                         width: 250,

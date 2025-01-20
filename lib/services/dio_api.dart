@@ -12,7 +12,12 @@ class DioService {
 
   DioService._internal() {
     _dio = Dio(BaseOptions(
-      baseUrl: 'https://api.example.com', // Thay đổi URL API của bạn
+      validateStatus: (status) {
+        // Accept all status codes
+        return true;
+      },
+      baseUrl:
+          'https://api-doff.giday.net/public/api/business-admin/', // Thay đổi URL API của bạn
       connectTimeout: const Duration(seconds: 5),
       receiveTimeout: const Duration(seconds: 3),
       headers: {

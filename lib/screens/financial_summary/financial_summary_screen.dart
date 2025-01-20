@@ -1,13 +1,19 @@
 import 'package:app_chess/screens/financial_summary/widget/financial_one.dart';
 import 'package:app_chess/screens/login/login_screen.dart';
+import 'package:app_chess/services/model/summary_response.dart';
 import 'package:app_chess/theme_extension.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'summary_page.dart';
+import 'widget/device_page.dart';
 import 'widget/financial_two.dart';
 // import 'package:intl/intl.dart';
 
 class FinancialSummaryScreen extends StatefulWidget {
-  const FinancialSummaryScreen({Key? key}) : super(key: key);
+  const FinancialSummaryScreen({
+    super.key,
+  });
 
   @override
   State<FinancialSummaryScreen> createState() => _FinancialSummaryScreenState();
@@ -26,16 +32,18 @@ class _FinancialSummaryScreenState extends State<FinancialSummaryScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Date Range Container
-              if (focusIndex == 0) ...[
-                FinancialOneScreen()
-              ] else ...[
-                DeviceListScreen()
-              ],
-              const Spacer(),
+              Expanded(
+                child: (focusIndex == 0) ? SummaryPage() : DevicePage(),
+              ), // Date Range Container,
+
+              // const Spacer(),
 
               // Bottom Navigation
               SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                // height: ,
                 width: double.infinity,
                 child: Row(
                   children: [
