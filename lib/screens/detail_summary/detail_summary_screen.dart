@@ -1,9 +1,13 @@
+import 'package:app_chess/services/model/summary_of_user_response.dart';
 import 'package:app_chess/theme_extension.dart';
+import 'package:app_chess/util/covert_money.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
-class FinancialTotalsScreen extends StatelessWidget {
-  const FinancialTotalsScreen({Key? key}) : super(key: key);
+class DetailSummaryScreen extends StatelessWidget {
+  final DetailSummaryModel? detailSummaryModel;
+  const DetailSummaryScreen({super.key, required this.detailSummaryModel});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +32,26 @@ class FinancialTotalsScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _buildRow(context, "Tổng tiền mặt", "356,892"),
+                    _buildRow(
+                        context,
+                        "total_cash".tr(),
+                        CurrencyFormatter.formatEUR(detailSummaryModel != null
+                            ? detailSummaryModel!.totalCash ?? 0
+                            : 0)),
                     const SizedBox(height: 8),
-                    _buildRow(context, "N Tiền mặt", "356,892"),
+                    _buildRow(
+                        context,
+                        "n_cash".tr(),
+                        CurrencyFormatter.formatEUR(detailSummaryModel != null
+                            ? detailSummaryModel!.nCash ?? 0
+                            : 0)),
                     const SizedBox(height: 8),
-                    _buildRow(context, "Tiền mặt", "356,892"),
+                    _buildRow(
+                        context,
+                        "cash".tr(),
+                        CurrencyFormatter.formatEUR(detailSummaryModel != null
+                            ? detailSummaryModel!.cash ?? 0
+                            : 0)),
                   ],
                 ),
               ),
@@ -50,7 +69,12 @@ class FinancialTotalsScreen extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: _buildRow(context, "Tổng tiền thẻ", "226,892"),
+                child: _buildRow(
+                    context,
+                    "total_card".tr(),
+                    CurrencyFormatter.formatEUR(detailSummaryModel != null
+                        ? detailSummaryModel!.card ?? 0
+                        : 0)),
               ),
 
               const SizedBox(height: 16),
@@ -63,7 +87,12 @@ class FinancialTotalsScreen extends StatelessWidget {
                   color: const Color(0xFFE6D5CC),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: _buildRow(context, "Tổng tất cả", "583,784"),
+                child: _buildRow(
+                    context,
+                    "total".tr(),
+                    CurrencyFormatter.formatEUR(detailSummaryModel != null
+                        ? detailSummaryModel!.total ?? 0
+                        : 0)),
               ),
 
               const Spacer(),
@@ -82,7 +111,7 @@ class FinancialTotalsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  child: Text("Quay lại",
+                  child: Text("back".tr(),
                       style: context.textTheme.titleMedium!
                           .copyWith(color: Colors.white)),
                 ),

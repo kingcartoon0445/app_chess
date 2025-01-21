@@ -1,11 +1,13 @@
 import 'package:app_chess/bloc/summary/summary_bloc.dart';
 import 'package:app_chess/bloc/summary/summary_event.dart';
 import 'package:app_chess/main.dart';
-import 'package:app_chess/screens/detail_financial_summary/detail_financial_summary_screen.dart';
+import 'package:app_chess/screens/detail_summary/detail_summary_page.dart';
+import 'package:app_chess/screens/detail_summary/detail_summary_screen.dart';
 import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/services/model/summary_response.dart';
 import 'package:app_chess/theme_extension.dart';
 import 'package:app_chess/util/covert_money.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -76,9 +78,11 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
             itemBuilder: (context, index) {
               return _buildListItem(
                   context,
-                  widget.summaryModel!.users![0].userName!,
+                  widget.summaryModel!.users![index].userName!,
                   CurrencyFormatter.formatEUR(
-                      widget.summaryModel!.users![0].total!));
+                    widget.summaryModel!.users![index].total!,
+                  ),
+                  widget.summaryModel!.users![index]);
             },
           ),
         ),
@@ -99,7 +103,7 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Tổng tiền", style: context.textTheme.labelSmall),
+              Text("total".tr(), style: context.textTheme.labelSmall),
               Text(
                   CurrencyFormatter.formatEUR(widget.summaryModel != null
                       ? widget.summaryModel!.total!
@@ -117,19 +121,23 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
           height: 75,
           child: InkWell(
             borderRadius: BorderRadius.circular(30),
-            onTap: () {},
+            onTap: () {
+              DateTime dateFrom = DateTime.now();
+              DateTime dateTo = DateTime.now();
+              _resetData();
+            },
             child: Container(
               width: 300,
               // padding: EdgeInsets.fromLTRB(30, 10, 60, 10),
               height: 60,
-              child: Center(
-                child: Text('Làm sạch',
-                    style: context.textTheme.titleMedium!
-                        .copyWith(color: Colors.white)),
-              ),
               decoration: BoxDecoration(
                 color: context.theme.primaryColor,
                 borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Text("clear".tr(),
+                    style: context.textTheme.titleMedium!
+                        .copyWith(color: Colors.white)),
               ),
             ),
           ),
@@ -141,7 +149,7 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
   _getDateWithDateTime(DateTime dateFrom, DateTime dateTo) {
     context.read<SummaryBloc>().add(
           FetchSummary(
-            dateFrom: "2022-10-01",
+            dateFrom: formatter.format(dateFrom),
             dateTo: formatter.format(dateTo),
           ),
         );
@@ -153,12 +161,18 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
         );
   }
 
-  Widget _buildListItem(BuildContext context, String title, String amount) {
+  Widget _buildListItem(
+      BuildContext context, String title, String amount, Users user) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FinancialTotalsScreen()),
+          MaterialPageRoute(
+              builder: (context) => DetailSummaryPage(
+                    user: user.userName ?? "",
+                    date_from: formatter.format(dateFrom),
+                    date_to: formatter.format(dateTo),
+                  )),
         );
       },
       child: Container(
@@ -226,7 +240,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                     widget.onPressed(_date);
                   },
                   child: Text(
-                    "Done",
+                    "done".tr(),
                     style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w600,

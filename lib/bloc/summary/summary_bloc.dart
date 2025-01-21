@@ -34,12 +34,12 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       } else {
         // Đăng nhập thất bại
 
-        emit(SummaryError('Lấy tổng hợp bại: ${response.data['message']}'));
+        emit(SummaryError('Error API ${response.data['message']}'));
       }
     } catch (error) {
-      // print('Lỗi: $error');
+      // print('Error $error');
 
-      emit(SummaryError('Lỗi: $error'));
+      emit(SummaryError('Error $error'));
     }
   }
 
@@ -50,26 +50,21 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
     emit(SummaryLoading());
     try {
       DioService apiService = DioService();
-      final response = await apiService.get(
-        'reset-data}',
+      final response = await apiService.post(
+        'reset-data',
       );
 
       if (response.data['success'] == true) {
-        final summaryResponse = SummaryResponse.fromJson(response.data);
-
-        final summaryModel = summaryResponse.summaryModel;
-
-        print('Lấy tổng hợp thành công: ${summaryResponse.message}');
         emit(SummaryResetDone());
       } else {
         // Đăng nhập thất bại
 
-        emit(SummaryError('Lấy tổng hợp bại: ${response.data['message']}'));
+        emit(SummaryError('Error API ${response.data['message']}'));
       }
     } catch (error) {
-      // print('Lỗi: $error');
+      // print('Error $error');
 
-      emit(SummaryError('Lỗi: $error'));
+      emit(SummaryError('Error $error'));
     }
   }
 }

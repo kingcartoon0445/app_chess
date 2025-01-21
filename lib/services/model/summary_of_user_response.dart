@@ -1,14 +1,14 @@
-class SummaryOfUserResponse {
+class DetailSummaryResponse {
   bool? success;
-  SummaryOfUserModel? summaryOfUserModel;
+  DetailSummaryModel? summaryOfUserModel;
   String? message;
 
-  SummaryOfUserResponse({this.success, this.summaryOfUserModel, this.message});
+  DetailSummaryResponse({this.success, this.summaryOfUserModel, this.message});
 
-  SummaryOfUserResponse.fromJson(Map<String, dynamic> json) {
+  DetailSummaryResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     summaryOfUserModel = json['data'] != null
-        ? new SummaryOfUserModel.fromJson(json['data'])
+        ? new DetailSummaryModel.fromJson(json['data'])
         : null;
     message = json['message'];
   }
@@ -24,17 +24,17 @@ class SummaryOfUserResponse {
   }
 }
 
-class SummaryOfUserModel {
+class DetailSummaryModel {
   num? totalCash;
-  int? nCash;
+  num? nCash;
   num? cash;
   num? card;
-  int? total;
+  num? total;
 
-  SummaryOfUserModel(
+  DetailSummaryModel(
       {this.totalCash, this.nCash, this.cash, this.card, this.total});
 
-  SummaryOfUserModel.fromJson(Map<String, dynamic> json) {
+  DetailSummaryModel.fromJson(Map<String, dynamic> json) {
     totalCash = json['total_cash'];
     nCash = json['n_cash'];
     cash = json['cash'];

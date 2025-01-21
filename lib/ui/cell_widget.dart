@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:app_chess/bloc/cubits/game_cubit.dart';
 import 'package:app_chess/config/colors.dart';
 import 'package:app_chess/models/cell.dart';
+import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/screens/login/login_page.dart';
 import 'package:app_chess/screens/login/login_screen.dart';
 import 'package:app_chess/ui/figure_widget.dart';
+import 'package:app_chess/util/shared_preferences_setup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get_it/get_it.dart';
@@ -21,9 +25,14 @@ class CellWidget extends StatelessWidget {
       : super(key: key);
 
   _onTap(BuildContext context) {
+    final prefs = SharedPrefsService();
+    String token = prefs.getString(PrefsKey().token);
+    log(token);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(
+          builder: (context) =>
+              token == "" ? LoginPage() : FinancialSummaryScreen()),
     );
     final gameCubit = GetIt.I<GameCubit>();
 

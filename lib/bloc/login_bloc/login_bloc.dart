@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:app_chess/services/model/login_response.dart';
 import 'package:app_chess/services/service.dart';
+import 'package:app_chess/util/shared_preferences_setup.dart';
 
 import 'login_export.dart';
 
@@ -18,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoading());
     try {
+      final prefs = SharedPrefsService();
       DioService apiService = DioService();
       final response = await apiService.post(
         'login',
@@ -32,18 +36,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         // Lưu token
         apiService.setAuthToken(user.apiToken);
+        // event.saveTok  en
+        if (event.saveToken) {
+          var a = await prefs.setString(PrefsKey().token, user.apiToken);
+          log(a.toString());
+        }
         print('Đăng nhập thành công: ${loginResponse.message}');
         emit(LoginLoaded(loginResponse.loginData!));
       } else {
         // Đăng nhập thất bại
-        print('Đăng nhập thất bại: ${response.data['message']}');
+        print('Đăng nhập thất bại: Error API ${response.data['message']}');
         // return StatusLogin.LOGINERROR;
-        emit(LoginError("Đăng nhập thất bại: ${response.data['message']}"));
+        emit(LoginError(
+            "Đăng nhập thất bại: Error API ${response.data['message']}"));
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
 
-      emit(LoginError("Lỗi: $error"));
+      emit(LoginError("Error $error"));
     }
   }
 }

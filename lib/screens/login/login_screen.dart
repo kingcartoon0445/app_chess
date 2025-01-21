@@ -1,11 +1,12 @@
 import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/screens/login/widget.dart';
 import 'package:app_chess/theme_extension.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class LoginScreen extends StatefulWidget {
-  Function(String userName, String passwold) onLogin;
+  Function(String userName, String passwold, bool saveToken) onLogin;
   LoginScreen({Key? key, required this.onLogin}) : super(key: key);
 
   @override
@@ -17,6 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
   bool _obscurePassword = true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    _usernameController.text = "tamnhu";
+    _passwordController.text = "tamnhu@2024";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             top: MediaQuery.of(context).padding.top),
                         child: Center(
                           child: Text(
-                            "LOGIN",
+                            "login".tr().toUpperCase(),
                             style: context.textTheme.displayLarge,
                           ),
                         ),
@@ -86,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   CustomTextField(
                     pretfixIcon: SvgPicture.asset("assets/svg/user_name.svg"),
                     controller: _usernameController,
-                    hintText: 'Username',
+                    hintText: 'username'.tr(),
                   ),
                   SizedBox(height: 20),
                   // // Password field
@@ -95,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     pretfixIcon: SvgPicture.asset("assets/svg/pass_word.svg"),
                     controller: _passwordController,
                     obscureText: _obscurePassword,
-                    hintText: 'Password',
+                    hintText: 'password'.tr(),
                     suffixIcon: InkWell(
                       onTap: () {
                         setState(() {
@@ -157,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         inactiveThumbColor: context.theme.primaryColor,
                         inactiveTrackColor: Colors.white,
                       ),
-                      Text('Ghi nhớ cho lần sau',
+                      Text('forgot_password'.tr(),
                           style: context.textTheme.titleSmall!.copyWith(
                               color: Colors.black,
                               fontWeight: FontWeight.normal)),
@@ -169,8 +177,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(30),
                       onTap: () {
-                        widget.onLogin(
-                            _usernameController.text, _passwordController.text);
+                        widget.onLogin(_usernameController.text,
+                            _passwordController.text, _rememberMe);
                       },
                       child: Container(
                         width: 250,
@@ -180,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Center(
-                          child: Text('Đăng nhập',
+                          child: Text('login'.tr(),
                               style: context.textTheme.titleMedium!
                                   .copyWith(color: Colors.white)),
                         ),

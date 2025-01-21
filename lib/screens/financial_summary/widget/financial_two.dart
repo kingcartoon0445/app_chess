@@ -1,6 +1,7 @@
 import 'package:app_chess/bloc/device/device_export.dart';
 import 'package:app_chess/services/model/device_response.dart';
 import 'package:app_chess/theme_extension.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DeviceListScreen extends StatefulWidget {
   final List<DeviceModel>? deviceModeles;
@@ -21,7 +22,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Danh sách thiết bị',
+              Text('device_list'.tr(),
                   style: context.textTheme.titleLarge!.copyWith(
                       color: context.theme.primaryColor,
                       fontWeight: FontWeight.w600)),
@@ -56,7 +57,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                                 horizontal: 16,
                               ),
                               child: Center(
-                                child: Text('Thiết bị',
+                                child: Text('device'.tr(),
                                     style: context.textTheme.labelMedium!
                                         .copyWith(
                                             color: Colors.black,
@@ -81,7 +82,7 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                                 ),
                               ),
                               child: Center(
-                                child: Text('Trạng thái',
+                                child: Text('status'.tr(),
                                     style: context.textTheme.labelMedium!
                                         .copyWith(
                                             color: Colors.black,
@@ -142,12 +143,14 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
                                   ),
                                 ),
                                 child: Switch(
-                                  value:
-                                      widget.deviceModeles![index].active == 1,
+                                  value: widget.deviceModeles![index]
+                                          .activeFromBusiness ==
+                                      1,
                                   onChanged: (bool value) {
                                     setState(() {
                                       if (value) {
-                                        widget.deviceModeles![index].active = 1;
+                                        widget.deviceModeles![index]
+                                            .activeFromBusiness = 1;
                                         context.read<DeviceBloc>().add(
                                               FetchChangeStatusDevice(
                                                   id: widget

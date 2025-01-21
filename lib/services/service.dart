@@ -34,7 +34,7 @@ class ServiceApp {
         return StatusLogin.LOGINERROR;
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
       return StatusLogin.LOGINERROR;
     }
   }
@@ -63,13 +63,13 @@ class ServiceApp {
         return null;
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
       return null;
     }
   }
 
   // ignore: non_constant_identifier_names
-  Future<SummaryOfUserModel?> getSummaryByUser(
+  Future<DetailSummaryModel?> getSummaryByUser(
       {required String user,
       // ignore: non_constant_identifier_names
       required String date_from,
@@ -82,11 +82,11 @@ class ServiceApp {
       );
 
       final summaryOfUserResponse =
-          SummaryOfUserResponse.fromJson(response.data);
+          DetailSummaryResponse.fromJson(response.data);
 
       if (summaryOfUserResponse.success!) {
         // Đăng nhập thành công
-        SummaryOfUserModel? summaryOfUserModel =
+        DetailSummaryModel? summaryOfUserModel =
             summaryOfUserResponse.summaryOfUserModel;
 
         // Lưu token
@@ -99,7 +99,7 @@ class ServiceApp {
         return null;
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
       return null;
     }
   }
@@ -127,7 +127,7 @@ class ServiceApp {
         return null;
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
       return null;
     }
   }
@@ -158,7 +158,7 @@ class ServiceApp {
         return null;
       }
     } catch (error) {
-      print('Lỗi: $error');
+      print('Error $error');
       return null;
     }
   }

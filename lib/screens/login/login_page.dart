@@ -4,6 +4,8 @@ import 'package:app_chess/screens/financial_summary/summary_page.dart';
 import 'package:app_chess/ui/loading_common.dart';
 import 'package:app_chess/ui/widget/dialog_common.dart';
 import 'package:app_chess/util/global_data.dart';
+import 'package:app_chess/util/shared_preferences_setup.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../bloc/login_bloc/login_export.dart';
 import 'login_screen.dart';
@@ -43,17 +45,31 @@ class _LoginViewState extends State<LoginView> {
           LoadingDialog.show(
             context,
             customLoadingWidget: CustomLoadingWidget(
-              color: Colors.red,
-              size: 60,
+              // color: Colors.red,
+              size: 40,
             ),
-            message: 'Đang xử lý...',
+            message: 'loading'.tr(),
           );
         }
 
         if (state is LoginError) {
           LoadingDialog.hide(context);
-          DialogCommon()
-              .showErrorDialog(context, message: 'Error: ${state.message}');
+          if (state.message == 'Unauthenticated.') {
+            final prefs = SharedPrefsService();
+            prefs.clear();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+              (Route<dynamic> route) => true,
+            );
+            DialogCommon()
+                .showErrorDialog(context, message: 'unauthenticated'.tr());
+          } else {
+            DialogCommon()
+                .showErrorDialog(context, message: 'Error: ${state.message}');
+          }
         }
 
         if (state is LoginLoaded) {
@@ -62,16 +78,20 @@ class _LoginViewState extends State<LoginView> {
               state.loginData!.business; // lưu GlobalData
           LoadingDialog.hide(context);
           // return FinancialLoginScreen();
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => FinancialSummaryScreen()),
+            MaterialPageRoute(
+              builder: (context) => FinancialSummaryScreen(),
+            ),
+            (Route<dynamic> route) => true,
           );
         }
       },
       child: LoginScreen(
-        onLogin: (userName, passwold) {
+        onLogin: (userName, passwold, saveToken) {
           context.read<LoginBloc>().add(
                 FetchLogin(
+                  saveToken: saveToken,
                   // token: 'your_token_here',
                   username: userName,
                   password: passwold,

@@ -24,9 +24,9 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
         'device',
       );
 
-      final summaryResponse = DeviceResponse.fromJson(response.data);
+      if (response.data['success']!) {
+        final summaryResponse = DeviceResponse.fromJson(response.data);
 
-      if (summaryResponse.success!) {
         final deviceModeles = summaryResponse.deviceModeles;
 
         print('Lấy tổng hợp thành công: ${summaryResponse.message}');
@@ -34,12 +34,12 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       } else {
         // Đăng nhập thất bại
 
-        emit(DeviceError('Lấy tổng hợp bại: ${summaryResponse.message}'));
+        emit(DeviceError('Error API ${response.data['message']}'));
       }
     } catch (error) {
-      // print('Lỗi: $error');
+      // print('Error $error');
 
-      emit(DeviceError('Lỗi: $error'));
+      emit(DeviceError('Error $error'));
     }
   }
 
@@ -63,12 +63,12 @@ class DeviceBloc extends Bloc<DeviceEvent, DeviceState> {
       } else {
         // Đăng nhập thất bại
 
-        emit(DeviceError('Lấy tổng hợp bại: ${response.data['message']}'));
+        emit(DeviceError('Error API ${response.data['message']}'));
       }
     } catch (error) {
-      // print('Lỗi: $error');
+      // print('Error $error');
 
-      emit(DeviceError('Lỗi: $error'));
+      emit(DeviceError('Error $error'));
     }
   }
 }

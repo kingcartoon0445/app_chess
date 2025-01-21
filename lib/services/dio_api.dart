@@ -40,7 +40,7 @@ class DioService {
       },
       onError: (error, handler) {
         // Xử lý khi có lỗi
-        print('Lỗi: ${error.message}');
+        print('Error ${error.message}');
         return handler.next(error);
       },
     ));

@@ -1,16 +1,26 @@
 import 'package:app_chess/bloc/app_blocs.dart';
 import 'package:app_chess/screens/game_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'util/shared_preferences_setup.dart';
 export 'package:flutter/material.dart';
 export 'package:app_chess/services/dio_api.dart';
 export 'package:dio/dio.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
   createAppBlocs();
-
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  await SharedPrefsService.init();
+  runApp(EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('vi'), Locale('de')],
+      path: 'assets/lang', // đường dẫn tới thư mục translations
+      fallbackLocale: const Locale('vi'),
+      startLocale: const Locale('vi'),
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,6 +30,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       title: 'Flutter Chess Demo',
       theme: ThemeData(
         fontFamily: GoogleFonts.barlowCondensed().fontFamily,

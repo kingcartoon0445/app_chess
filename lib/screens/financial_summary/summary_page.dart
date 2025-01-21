@@ -1,7 +1,10 @@
 import 'package:app_chess/bloc/summary/summary_export.dart';
+import 'package:app_chess/screens/login/login_page.dart';
 import 'package:app_chess/services/model/summary_response.dart';
 import 'package:app_chess/ui/loading_common.dart';
 import 'package:app_chess/ui/widget/dialog_common.dart';
+import 'package:app_chess/util/shared_preferences_setup.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
 
 import 'financial_summary_screen.dart';
@@ -43,7 +46,6 @@ class _SummaryViewState extends State<SummaryView> {
         );
   }
 
-  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return BlocListener<SummaryBloc, SummaryState>(
@@ -51,13 +53,20 @@ class _SummaryViewState extends State<SummaryView> {
         if (state is SummaryLoading) {
           LoadingDialog.show(
             context,
-            message: 'Đang tải dữ liệu...',
+            customLoadingWidget: CustomLoadingWidget(
+              // color: Colors.red,
+              size: 40,
+            ),
+            message: 'loading'.tr(),
           );
         }
         if (state is SummaryResetDone) {
-          setState(() {
-            isLoading = false;
-          });
+          LoadingDialog.hide(context);
+          DialogCommon().showSuccessDialog(
+            context,
+            message: "clean_done".tr(),
+            onButtonPressed: () {},
+          );
           context.read<SummaryBloc>().add(
                 FetchSummary(
                   dateFrom: formatter.format(DateTime.now()),
@@ -67,8 +76,22 @@ class _SummaryViewState extends State<SummaryView> {
         }
         if (state is SummaryError) {
           LoadingDialog.hide(context);
-          DialogCommon()
-              .showErrorDialog(context, message: 'Error: ${state.message}');
+          if (state.message == 'Unauthenticated.') {
+            final prefs = SharedPrefsService();
+            prefs.clear();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+              (Route<dynamic> route) => true,
+            );
+            DialogCommon()
+                .showErrorDialog(context, message: 'unauthenticated'.tr());
+          } else {
+            DialogCommon()
+                .showErrorDialog(context, message: 'Error: ${state.message}');
+          }
         }
 
         if (state is SummaryLoaded) {

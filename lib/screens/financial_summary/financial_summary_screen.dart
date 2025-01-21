@@ -1,13 +1,9 @@
-import 'package:app_chess/screens/financial_summary/widget/financial_one.dart';
-import 'package:app_chess/screens/login/login_screen.dart';
-import 'package:app_chess/services/model/summary_response.dart';
 import 'package:app_chess/theme_extension.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'summary_page.dart';
 import 'widget/device_page.dart';
-import 'widget/financial_two.dart';
 // import 'package:intl/intl.dart';
 
 class FinancialSummaryScreen extends StatefulWidget {
@@ -70,7 +66,7 @@ class _FinancialSummaryScreenState extends State<FinancialSummaryScreen> {
                             ),
                           ),
                           child: Center(
-                            child: Text("Doanh thu",
+                            child: Text("revenue".tr(),
                                 style: context.textTheme.titleMedium!.copyWith(
                                     color: focusIndex == 1
                                         ? context.theme.primaryColor
@@ -103,7 +99,7 @@ class _FinancialSummaryScreenState extends State<FinancialSummaryScreen> {
                             ),
                           ),
                           child: Center(
-                            child: Text("Thiết bị",
+                            child: Text("device".tr(),
                                 style: context.textTheme.titleMedium!.copyWith(
                                     color: focusIndex == 0
                                         ? context.theme.primaryColor

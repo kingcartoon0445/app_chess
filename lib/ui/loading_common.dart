@@ -1,3 +1,4 @@
+import 'package:app_chess/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 class LoadingDialog extends StatelessWidget {
@@ -97,12 +98,10 @@ class LoadingDialog extends StatelessWidget {
 
 // Custom loading widget example
 class CustomLoadingWidget extends StatelessWidget {
-  final Color color;
   final double size;
 
   const CustomLoadingWidget({
     super.key,
-    this.color = Colors.blue,
     this.size = 50.0,
   });
 
@@ -112,7 +111,7 @@ class CustomLoadingWidget extends StatelessWidget {
       width: size,
       height: size,
       child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(color),
+        valueColor: AlwaysStoppedAnimation<Color>(context.theme.primaryColor),
         strokeWidth: 4,
       ),
     );

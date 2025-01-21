@@ -4,16 +4,17 @@ import '../../main.dart';
 
 class DialogCommon {
   // Show Success Dialog
-  void showSuccessDialog(BuildContext context) {
+  void showSuccessDialog(BuildContext context,
+      {required String message, Function()? onButtonPressed}) {
     showDialog(
       context: context,
-      builder: (context) => const StatusDialog(
+      builder: (context) => StatusDialog(
         isSuccess: true,
         // Optional customizations:
         // title: 'Custom Title',
-        // message: 'Custom message here',
+        message: message,
         // buttonText: 'Custom Button Text',
-        // onButtonPressed: () => print('Button pressed'),
+        onButtonPressed: onButtonPressed,
       ),
     );
   }
