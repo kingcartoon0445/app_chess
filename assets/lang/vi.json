@@ -22,5 +22,7 @@
     "unauthenticated": "Phiên làm việc đã hết hạn, vui lòng đăng nhập lại",
     "update_status_done": "Cập nhật trạng thái thành công",
     "done":"Xong",
-    "clean_done":"Xóa thành công"
+    "clean_done":"Xóa thành công",
+    "from_date":"Từ ngày",
+    "to_date":"Đến ngày"
 }

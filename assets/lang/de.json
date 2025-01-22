@@ -22,5 +22,7 @@
     "unauthenticated": "Sitzung abgelaufen, bitte melden Sie sich erneut an",
     "update_status_done": "Status erfolgreich aktualisieren",
     "done":"Erledigt",
-    "clean_done":"Erfolgreich löschen"
+    "clean_done":"Erfolgreich löschen",
+    "from_date":"ab Datum",
+    "to_date":"Miteinander ausgehen"
 }

@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefsKey {
   String token = "token";
+  String user = "user";
+  String business = "business";
 }
 
 class SharedPrefsService {
@@ -24,6 +26,24 @@ class SharedPrefsService {
 
   String getString(String key, {String defaultValue = ''}) {
     return _prefs?.getString(key) ?? defaultValue;
+  }
+
+  Future<void> saveMapToSharedPreferences(
+      String key, Map<String, dynamic> map) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(map); // Chuyển Map thành JSON string
+    await prefs.setString(
+        key, jsonString); // Lưu chuỗi JSON vào SharedPreferences
+  }
+
+  Future<Map<String, dynamic>?> getMapFromSharedPreferences(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString =
+        prefs.getString(key); // Lấy chuỗi JSON từ SharedPreferences
+    if (jsonString != null) {
+      return jsonDecode(jsonString); // Chuyển JSON string thành Map
+    }
+    return null; // Trả về null nếu key không tồn tại
   }
 
   // Int operations

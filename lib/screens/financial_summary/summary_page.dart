@@ -76,7 +76,8 @@ class _SummaryViewState extends State<SummaryView> {
         }
         if (state is SummaryError) {
           LoadingDialog.hide(context);
-          if (state.message == 'Unauthenticated.') {
+          if (state.message == 'Unauthenticated.' ||
+              state.message == 'Error API Unauthenticated') {
             final prefs = SharedPrefsService();
             prefs.clear();
             Navigator.pushAndRemoveUntil(

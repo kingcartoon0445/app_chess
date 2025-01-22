@@ -54,7 +54,8 @@ class _LoginViewState extends State<LoginView> {
 
         if (state is LoginError) {
           LoadingDialog.hide(context);
-          if (state.message == 'Unauthenticated.') {
+          if (state.message == 'Unauthenticated.' ||
+              state.message == 'Error API Unauthenticated') {
             final prefs = SharedPrefsService();
             prefs.clear();
             Navigator.pushAndRemoveUntil(
@@ -75,7 +76,7 @@ class _LoginViewState extends State<LoginView> {
         if (state is LoginLoaded) {
           GlobalData.instance.user = state.loginData!.user;
           GlobalData.instance.business =
-              state.loginData!.business; // lưu GlobalData
+              state.loginData!.business; //  lưu GlobalData
           LoadingDialog.hide(context);
           // return FinancialLoginScreen();
           Navigator.pushAndRemoveUntil(

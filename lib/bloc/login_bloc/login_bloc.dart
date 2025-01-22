@@ -38,8 +38,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         apiService.setAuthToken(user.apiToken);
         // event.saveTok  en
         if (event.saveToken) {
-          var a = await prefs.setString(PrefsKey().token, user.apiToken);
-          log(a.toString());
+          await prefs.setString(PrefsKey().token, user.apiToken);
+          await prefs.saveMapToSharedPreferences(
+              PrefsKey().business, loginResponse.loginData!.business.toJson());
         }
         print('Đăng nhập thành công: ${loginResponse.message}');
         emit(LoginLoaded(loginResponse.loginData!));

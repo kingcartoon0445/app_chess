@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:app_chess/bloc/summary/summary_bloc.dart';
 import 'package:app_chess/bloc/summary/summary_event.dart';
 import 'package:app_chess/main.dart';
@@ -5,8 +8,11 @@ import 'package:app_chess/screens/detail_summary/detail_summary_page.dart';
 import 'package:app_chess/screens/detail_summary/detail_summary_screen.dart';
 import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/services/model/summary_response.dart';
+import 'package:app_chess/services/ws_connector.dart';
 import 'package:app_chess/theme_extension.dart';
 import 'package:app_chess/util/covert_money.dart';
+import 'package:app_chess/util/global_data.dart';
+import 'package:app_chess/util/global_event.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +30,34 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
   DateTime dateFrom = DateTime.now();
   DateTime dateTo = DateTime.now();
   final DateFormat formatter = DateFormat('dd.MM.yyyy');
+  @override
+  void initState() {
+    // TODO: implement initState
+    _initWebSocket();
+    onListenSocket = GlobalEvent.instance.onListenSocketCtrl.stream.listen(
+      (data) {
+        // context.read<FirebaseCubit>().onListenSocket(data);
+        context.read<SummaryBloc>().add(
+              FetchSummary(
+                dateFrom: formatter.format(dateFrom),
+                dateTo: formatter.format(dateTo),
+              ),
+            );
+      },
+    );
+    super.initState();
+  }
+
+  void _initWebSocket() async {
+    await WsConnector.instance.initWS(
+      "54a949e6d9887cccc189",
+      "eu",
+    );
+    int userId = GlobalData.instance.business!.id ?? 0;
+    await WsConnector.instance.subChannel("load-invoice-$userId");
+  }
+
+  StreamSubscription? onListenSocket;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +65,14 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
       children: [
         InkWell(
           onTap: () {
-            _showIOS_DatePicker(context, date: dateFrom, onPresse: (date) {
+            _showIOS_DatePicker(context, date: dateFrom, text: "from_date".tr(),
+                onPresse: (date) {
               setState(() {
                 dateFrom = date;
               });
               Navigator.pop(context);
-              _showIOS_DatePicker(context, date: dateTo, onPresse: (date) {
+              _showIOS_DatePicker(context, date: dateTo, text: "to_date".tr(),
+                  onPresse: (date) {
                 setState(() {
                   dateTo = date;
                 });
@@ -195,11 +231,14 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
 
   // ignore: non_constant_identifier_names
   void _showIOS_DatePicker(ctx,
-      {required DateTime date, required Function(DateTime) onPresse}) {
+      {required DateTime date,
+      required String text,
+      required Function(DateTime) onPresse}) {
     showCupertinoModalPopup(
         context: ctx,
         builder: (_) => DateTimePicker(
               date: date,
+              text: text,
               onPressed: onPresse,
             ));
   }
@@ -207,8 +246,13 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
 
 class DateTimePicker extends StatefulWidget {
   DateTime date;
+  String text;
   Function(DateTime) onPressed;
-  DateTimePicker({super.key, required this.date, required this.onPressed});
+  DateTimePicker(
+      {super.key,
+      required this.date,
+      required this.text,
+      required this.onPressed});
 
   @override
   State<DateTimePicker> createState() => _DateTimePickerState();
@@ -231,25 +275,43 @@ class _DateTimePickerState extends State<DateTimePicker> {
         color: Color.fromARGB(255, 255, 255, 255),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Stack(
               children: [
-                SizedBox(
-                    child: TextButton(
-                  onPressed: () {
-                    widget.onPressed(_date);
-                  },
-                  child: Text(
-                    "done".tr(),
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                        child: TextButton(
+                      onPressed: () {
+                        widget.onPressed(_date);
+                      },
+                      child: Text(
+                        "done".tr(),
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20),
+                      ),
+                    )),
+                    SizedBox(
+                      width: 16,
+                    )
+                  ],
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Text(
+                      widget.text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w600,
+                          inherit: false,
+                          fontSize: 20),
+                    ),
                   ),
-                )),
-                SizedBox(
-                  width: 16,
-                )
+                ),
               ],
             ),
             SizedBox(

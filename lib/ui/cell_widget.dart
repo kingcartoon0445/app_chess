@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_chess/bloc/cubits/game_cubit.dart';
@@ -6,7 +7,10 @@ import 'package:app_chess/models/cell.dart';
 import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/screens/login/login_page.dart';
 import 'package:app_chess/screens/login/login_screen.dart';
+import 'package:app_chess/services/dio_api.dart';
+import 'package:app_chess/services/model/login_response.dart';
 import 'package:app_chess/ui/figure_widget.dart';
+import 'package:app_chess/util/global_data.dart';
 import 'package:app_chess/util/shared_preferences_setup.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +28,16 @@ class CellWidget extends StatelessWidget {
       required this.isAvailable})
       : super(key: key);
 
-  _onTap(BuildContext context) {
+  _onTap(BuildContext context) async {
     final prefs = SharedPrefsService();
+    DioService apiService = DioService();
     String token = prefs.getString(PrefsKey().token);
+    apiService.setAuthToken(token);
+    Map<String, dynamic>? business =
+        await prefs.getMapFromSharedPreferences(PrefsKey().business);
+    if (business != null) {
+      GlobalData.instance.business = Business.fromJson(business);
+    }
     log(token);
     Navigator.push(
       context,

@@ -22,5 +22,7 @@
     "unauthenticated": "Session expired, please log in again",
     "update_status_done": "Update status successfully",
     "done":"Done",
-    "clean_done":"Clean successfully"
+    "clean_done":"Clean successfully",
+    "from_date":"From Date",
+    "to_date":"To Date"
 }
