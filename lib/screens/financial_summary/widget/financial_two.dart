@@ -3,6 +3,9 @@ import 'package:app_chess/services/model/device_response.dart';
 import 'package:app_chess/theme_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../bloc/login_bloc/login_bloc.dart';
+import '../../../bloc/login_bloc/login_event.dart';
+
 class DeviceListScreen extends StatefulWidget {
   final List<DeviceModel>? deviceModeles;
   const DeviceListScreen({super.key, required this.deviceModeles});
@@ -22,6 +25,20 @@ class _DeviceListScreenState extends State<DeviceListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(width: 10),
+                  InkWell(
+                      onTap: () {
+                        context.read<LoginBloc>().add(
+                              FetchLogOut(),
+                            );
+                      },
+                      child: Icon(Icons.logout,
+                          size: 40, color: context.theme.primaryColor))
+                ],
+              ),
               Text('device_list'.tr(),
                   style: context.textTheme.titleLarge!.copyWith(
                       color: context.theme.primaryColor,

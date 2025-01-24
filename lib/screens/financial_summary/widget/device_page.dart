@@ -43,7 +43,7 @@ class _DeviceViewState extends State<DeviceView> {
   }
 
   List<DeviceModel>? deviceModeles = [];
-
+  final prefs = SharedPrefsService();
   @override
   Widget build(BuildContext context) {
     return BlocListener<DeviceBloc, DeviceState>(
@@ -61,9 +61,7 @@ class _DeviceViewState extends State<DeviceView> {
 
         if (state is DeviceError) {
           LoadingDialog.hide(context);
-          if (state.message == 'Unauthenticated.' ||
-              state.message == 'Error API Unauthenticated') {
-            final prefs = SharedPrefsService();
+          if (state.message == 'Unauthenticated.') {
             prefs.clear();
             Navigator.pushAndRemoveUntil(
               context,

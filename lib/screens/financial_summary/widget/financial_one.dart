@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:app_chess/bloc/summary/summary_bloc.dart';
 import 'package:app_chess/bloc/summary/summary_event.dart';
 import 'package:app_chess/main.dart';
 import 'package:app_chess/screens/detail_summary/detail_summary_page.dart';
-import 'package:app_chess/screens/detail_summary/detail_summary_screen.dart';
-import 'package:app_chess/screens/financial_summary/financial_summary_screen.dart';
 import 'package:app_chess/services/model/summary_response.dart';
 import 'package:app_chess/services/ws_connector.dart';
 import 'package:app_chess/theme_extension.dart';
@@ -15,8 +11,8 @@ import 'package:app_chess/util/global_data.dart';
 import 'package:app_chess/util/global_event.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
+import '../../../bloc/login_bloc/login_export.dart';
 
 class FinancialOneScreen extends StatefulWidget {
   final SummaryModel? summaryModel;
@@ -37,12 +33,21 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
     onListenSocket = GlobalEvent.instance.onListenSocketCtrl.stream.listen(
       (data) {
         // context.read<FirebaseCubit>().onListenSocket(data);
-        context.read<SummaryBloc>().add(
-              FetchSummary(
-                dateFrom: formatter.format(dateFrom),
-                dateTo: formatter.format(dateTo),
-              ),
-            );
+        if (data.eventName == "active_business" ||
+            data.eventName == "business_deleted") {
+          //out app
+          context.read<LoginBloc>().add(
+                FetchLogOut(),
+              );
+        }
+        if (data.eventName == "reload_summary") {
+          context.read<SummaryBloc>().add(
+                FetchSummary(
+                  dateFrom: formatter.format(dateFrom),
+                  dateTo: formatter.format(dateTo),
+                ),
+              );
+        }
       },
     );
     super.initState();
@@ -53,8 +58,8 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
       "54a949e6d9887cccc189",
       "eu",
     );
-    int userId = GlobalData.instance.business!.id ?? 0;
-    await WsConnector.instance.subChannel("load-invoice-$userId");
+    String userName = GlobalData.instance.business!.name ?? "";
+    await WsConnector.instance.subChannel(userName);
   }
 
   StreamSubscription? onListenSocket;
@@ -63,43 +68,62 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InkWell(
-          onTap: () {
-            _showIOS_DatePicker(context, date: dateFrom, text: "from_date".tr(),
-                onPresse: (date) {
-              setState(() {
-                dateFrom = date;
-              });
-              Navigator.pop(context);
-              _showIOS_DatePicker(context, date: dateTo, text: "to_date".tr(),
-                  onPresse: (date) {
-                setState(() {
-                  dateTo = date;
-                });
-                _getDateWithDateTime(dateFrom, dateTo);
-                Navigator.pop(context);
-              });
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: const Color(0xFFBB8B6B)),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.calendar_month, size: 40, color: Colors.brown[400]),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                        "${formatter.format(dateFrom)} - ${formatter.format(dateTo)} ",
-                        style: context.textTheme.titleMedium!),
+        Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  _showIOS_DatePicker(context,
+                      date: dateFrom, text: "from_date".tr(), onPresse: (date) {
+                    setState(() {
+                      dateFrom = date;
+                    });
+                    Navigator.pop(context);
+                    _showIOS_DatePicker(context,
+                        date: dateTo, text: "to_date".tr(), onPresse: (date) {
+                      setState(() {
+                        dateTo = date;
+                      });
+                      _getDateWithDateTime(dateFrom, dateTo);
+                      Navigator.pop(context);
+                    });
+                  });
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: const Color(0xFFBB8B6B)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_month,
+                          size: 40, color: Colors.brown[400]),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                              "${formatter.format(dateFrom)} - ${formatter.format(dateTo)}",
+                              textScaleFactor:
+                                  MediaQuery.of(context).textScaleFactor,
+                              style: context.textTheme.titleMedium!),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(width: 10),
+            InkWell(
+                onTap: () {
+                  context.read<LoginBloc>().add(
+                        FetchLogOut(),
+                      );
+                },
+                child: Icon(Icons.logout,
+                    size: 40, color: context.theme.primaryColor))
+          ],
         ),
 
         const SizedBox(height: 15),
@@ -112,13 +136,15 @@ class _FinancialOneScreenState extends State<FinancialOneScreen> {
                 ? widget.summaryModel!.users!.length
                 : 0,
             itemBuilder: (context, index) {
-              return _buildListItem(
-                  context,
-                  widget.summaryModel!.users![index].userName!,
-                  CurrencyFormatter.formatEUR(
-                    widget.summaryModel!.users![index].total!,
-                  ),
-                  widget.summaryModel!.users![index]);
+              return widget.summaryModel!.users![index].total == 0
+                  ? SizedBox()
+                  : _buildListItem(
+                      context,
+                      widget.summaryModel!.users![index].userName!,
+                      CurrencyFormatter.formatEUR(
+                        widget.summaryModel!.users![index].total!,
+                      ),
+                      widget.summaryModel!.users![index]);
             },
           ),
         ),

@@ -5,9 +5,7 @@ import 'package:app_chess/ui/loading_common.dart';
 import 'package:app_chess/ui/widget/dialog_common.dart';
 import 'package:app_chess/util/shared_preferences_setup.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:intl/intl.dart';
-
-import 'financial_summary_screen.dart';
+import '../../bloc/login_bloc/login_export.dart';
 import 'widget/financial_one.dart';
 
 class SummaryPage extends StatelessWidget {

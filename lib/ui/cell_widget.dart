@@ -16,35 +16,26 @@ import 'package:flutter/material.dart';
 
 import 'package:get_it/get_it.dart';
 
-class CellWidget extends StatelessWidget {
+class CellWidget extends StatefulWidget {
   final Cell cell;
   final bool isSelected;
   final bool isAvailable;
-
-  const CellWidget(
+  Function()? onTap;
+  CellWidget(
       {Key? key,
       required this.cell,
       required this.isSelected,
-      required this.isAvailable})
+      required this.isAvailable,
+      required this.onTap})
       : super(key: key);
 
+  @override
+  State<CellWidget> createState() => _CellWidgetState();
+}
+
+class _CellWidgetState extends State<CellWidget> {
   _onTap(BuildContext context) async {
-    final prefs = SharedPrefsService();
-    DioService apiService = DioService();
-    String token = prefs.getString(PrefsKey().token);
-    apiService.setAuthToken(token);
-    Map<String, dynamic>? business =
-        await prefs.getMapFromSharedPreferences(PrefsKey().business);
-    if (business != null) {
-      GlobalData.instance.business = Business.fromJson(business);
-    }
-    log(token);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              token == "" ? LoginPage() : FinancialSummaryScreen()),
-    );
+    widget.onTap!();
     final gameCubit = GetIt.I<GameCubit>();
 
     // if AI calculating position => block any interactions
@@ -54,13 +45,13 @@ class CellWidget extends StatelessWidget {
 
     final activeColor = gameCubit.state.activeColor;
 
-    if (isAvailable || (cell.occupied && isAvailable)) {
-      gameCubit.moveFigure(cell);
+    if (widget.isAvailable || (widget.cell.occupied && widget.isAvailable)) {
+      gameCubit.moveFigure(widget.cell);
       return;
     }
 
-    if (cell.occupied && activeColor == cell.getFigure()!.color) {
-      gameCubit.selectCell(cell);
+    if (widget.cell.occupied && activeColor == widget.cell.getFigure()!.color) {
+      gameCubit.selectCell(widget.cell);
       return;
     }
   }
@@ -72,17 +63,17 @@ class CellWidget extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            color: cell.isBlack ? AppColors.black : AppColors.white,
+            color: widget.cell.isBlack ? AppColors.black : AppColors.white,
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            color: isSelected
+            color: widget.isSelected
                 ? Colors.blueAccent.withOpacity(0.3)
                 : Colors.transparent,
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            color: isAvailable && cell.occupied
+            color: widget.isAvailable && widget.cell.occupied
                 ? Colors.redAccent.withOpacity(0.8)
                 : Colors.transparent,
           ),
@@ -90,17 +81,18 @@ class CellWidget extends StatelessWidget {
               builder: (BuildContext context, BoxConstraints constraints) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              width: isAvailable ? constraints.maxWidth * 0.2 : 0,
-              height: isAvailable ? constraints.maxWidth * 0.2 : 0,
+              width: widget.isAvailable ? constraints.maxWidth * 0.2 : 0,
+              height: widget.isAvailable ? constraints.maxWidth * 0.2 : 0,
               decoration: BoxDecoration(
                 color: Colors.lightGreenAccent.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(constraints.maxWidth),
               ),
             );
           })),
-          if (cell.occupied) FigureWidget(figure: cell.getFigure()!),
+          if (widget.cell.occupied)
+            FigureWidget(figure: widget.cell.getFigure()!),
           // Text(
-          //   cell.positionHash,
+          //   widget.cell.positionHash,
           //   style: const TextStyle(color: Colors.red),
           // )
         ],

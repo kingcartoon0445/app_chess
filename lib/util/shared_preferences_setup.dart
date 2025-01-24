@@ -9,6 +9,7 @@ class PrefsKey {
   String token = "token";
   String user = "user";
   String business = "business";
+  String passLogin = "passLogin";
 }
 
 class SharedPrefsService {
@@ -103,7 +104,10 @@ class SharedPrefsService {
 
   // Clear all data
   Future<bool> clear() async {
-    return await _prefs?.clear() ?? false;
+    await _prefs?.remove(PrefsKey().token);
+    await _prefs?.remove(PrefsKey().user);
+    await _prefs?.remove(PrefsKey().business);
+    return true;
   }
 
   // Check if key exists

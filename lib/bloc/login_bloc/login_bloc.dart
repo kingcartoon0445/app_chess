@@ -13,6 +13,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       : _dioService = dioService,
         super(const LoginInitial()) {
     on<FetchLogin>(_onFetchLogin);
+    on<FetchLogOut>(_onFetchLogOut);
   }
 
   Future<void> _onFetchLogin(
@@ -44,6 +45,37 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
         print('Đăng nhập thành công: ${loginResponse.message}');
         emit(LoginLoaded(loginResponse.loginData!));
+      } else {
+        // Đăng nhập thất bại
+        print('Đăng nhập thất bại: Error API ${response.data['message']}');
+        // return StatusLogin.LOGINERROR;
+        emit(LoginError(
+            "Đăng nhập thất bại: Error API ${response.data['message']}"));
+      }
+    } catch (error) {
+      print('Error $error');
+
+      emit(LoginError("Error $error"));
+    }
+  }
+
+  Future<void> _onFetchLogOut(
+    FetchLogOut event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(LoginLoading());
+    try {
+      DioService apiService = DioService();
+      final response = await apiService.post(
+        'logout',
+      );
+
+      if (response.data['success']) {
+        // Đăng nhập thành công
+
+        // event.saveToken
+
+        emit(LogOutLoaded());
       } else {
         // Đăng nhập thất bại
         print('Đăng nhập thất bại: Error API ${response.data['message']}');

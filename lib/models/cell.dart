@@ -7,7 +7,7 @@ class Cell {
   final GameColors color;
   final Board board;
   final CellPosition position;
-
+  int index;
   Figure? _figure;
 
   bool get occupied => _figure != null;
@@ -17,12 +17,16 @@ class Cell {
 
   String get positionHash => '${position.x}-${position.y}';
 
-  Cell({required this.color, required this.board, required this.position});
+  Cell(
+      {required this.color,
+      required this.board,
+      required this.position,
+      required this.index});
 
-  Cell.white({required this.board, required this.position})
+  Cell.white({required this.board, required this.position, required this.index})
       : color = GameColors.white;
 
-  Cell.black({required this.board, required this.position})
+  Cell.black({required this.board, required this.position, required this.index})
       : color = GameColors.black;
 
   void setFigure(Figure figure) {

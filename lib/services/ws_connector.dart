@@ -35,11 +35,9 @@ class WsConnector {
 
   void onEvent(PusherEvent event) {
     log("onEvent: $event");
-    int userId = GlobalData.instance.business!.id ?? 0;
-    if (event.eventName == "load-invoice-$userId") {
-      GlobalEvent.instance.onListenSocketCtrl.sink.add(event);
-      //json.decode()
-    }
+
+    GlobalEvent.instance.onListenSocketCtrl.sink.add(event);
+    //json.decode()
   }
 
   void onError(String message, int? code, dynamic error) {

@@ -23,17 +23,21 @@ class Board {
       {required this.cells, required this.blackLost, required this.whiteLost});
 
   void createCells() {
+    int i = 0;
     for (int y = 0; y < boardSize; y++) {
       final List<Cell> row = [];
 
       for (int x = 0; x < boardSize; x++) {
         if ((x + y) % 2 != 0) {
-          row.add(Cell.white(board: this, position: CellPosition(x, y)));
+          row.add(
+              Cell.white(board: this, position: CellPosition(x, y), index: i));
         } else {
-          row.add(Cell.black(board: this, position: CellPosition(x, y)));
+          row.add(
+              Cell.black(board: this, position: CellPosition(x, y), index: i));
         }
+        i++;
       }
-
+      i++;
       cells.add(row);
     }
   }

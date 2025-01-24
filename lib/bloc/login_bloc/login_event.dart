@@ -13,3 +13,5 @@ class FetchLogin extends LoginEvent {
     required this.password,
   });
 }
+
+class FetchLogOut extends LoginEvent {}
